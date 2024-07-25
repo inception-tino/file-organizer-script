@@ -1,36 +1,33 @@
 #!/bin/bash
 
-# Define the log file with an absolute path
-LOG_FILE="/home/ec2-user/file-organizer-script/logs/organizer.log"
+# Source other scripts
+source "$(dirname "$0")/file_type_detection.sh"
+source "$(dirname "$0")/directory_creation.sh"
+source "$(dirname "$0")/log_generation.sh"
+source "$(dirname "$0")/file_movement.sh"
 
-# Ensure the log directory exists
-mkdir -p "$(dirname "$LOG_FILE")"
-
-# Log action function
-log_action() {
-    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> $LOG_FILE
+# Function to get user input
+get_user_input() {
+    read -p "Enter the directory to organize: " target_directory
+    if [ -d "$target_directory" ]; then
+        cd "$target_directory" || exit
+        echo -e "\e[36mOrganizing directory: $target_directory\e[0m"  # Cyan text
+    else
+        echo -e "\e[31mDirectory does not exist. Exiting...\e[0m"  # Red text
+        exit 1
+    fi
 }
 
-# File Type Detection and Directory Creation
-detect_and_create_dirs() {
-    echo "Starting file detection and directory creation..."  # Debug output
-    log_action "Starting file detection and directory creation..."
-
-    for file in $(ls -p | grep -v /); do
-        if [ -f "$file" ]; then
-            extension="${file##*.}"
-            mkdir -p "$extension"
-            mv "$file" "$extension/"
-            log_action "Moved $file to $extension/"
-            echo "Moved $file to $extension/"
-        else
-            echo "$file is not a regular file."  # Debug output for non-regular files
-        fi
-    done
-
-    echo "Finished file detection and directory creation."  # Debug output
-    log_action "Finished file detection and directory creation."
+# Main function to integrate all modules
+main() {
+    get_user_input
+    detect_file_types
+    create_directories
+    file_movement  # Move files to their respective directories
+    generate_log  # Log the actions performed
+    echo -e "\e[35mOrganization complete!\e[0m"  # Magenta text
 }
 
-detect_and_create_dirs
+# Run the main function
+main
 
