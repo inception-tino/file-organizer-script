@@ -1,8 +1,6 @@
 #!/bin/bash
 
 # Source other scripts
-source "$(dirname "$0")/file_type_detection.sh"
-source "$(dirname "$0")/directory_creation.sh"
 source "$(dirname "$0")/log_generation.sh"
 source "$(dirname "$0")/file_movement.sh"
 
