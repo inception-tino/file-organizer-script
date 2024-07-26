@@ -1,8 +1,10 @@
 #!/bin/bash
 
 # Source other scripts
-source $(dirname "$0")/file_type_detection.sh
-source $(dirname "$0")/directory_creation.sh
+source "$(dirname "$0")/file_type_detection.sh"
+source "$(dirname "$0")/directory_creation.sh"
+source "$(dirname "$0")/log_generation.sh"
+source "$(dirname "$0")/file_movement.sh"
 
 # Function to get user input
 get_user_input() {
@@ -21,9 +23,10 @@ main() {
     get_user_input
     detect_file_types
     create_directories
+    file_movement  # Move files to their respective directories
+    generate_log  # Log the actions performed
     echo -e "\e[35mOrganization complete!\e[0m"  # Magenta text
 }
 
-# Execute main function
+# Run the main function
 main
-
